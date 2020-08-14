@@ -77,7 +77,8 @@ void SS::doFabricateSQL(int asz, char **theTokens, char **replacements, char *SQ
     can use this data.
     kk = 0;
     while ( kk <=  resultingStringSize ) {
-        if ( cStringBuffer[kk] != ';') {
+        if ( cStringBuffer[kk] != ';') { //cStringBuffer is supplied by the caller. It is the caller's responsibility to make sure \
+            cStringBuffer is sufficiently sized to hole the resulting stirng found in
             kk++;
             continue;
         } else {
@@ -92,11 +93,7 @@ void SS::doFabricateSQL(int asz, char **theTokens, char **replacements, char *SQ
 SS::~SS() {
     ;  //Destructor seems to be called when the fabricateSQL function executes the delete instruction for deleting the instance \
     object
-    cout << "Made it to the destructor" << endl;
-    ; //What's to destruct? We haven't done any callocs or mallocs in which we need to do frees to positively "clean up the \
-    garbage". Note, that we seem, according to Xcode's debugger,  to enter here when we instantiate a new object \
-    for the purpose of initializing those private area's constants that can only be initialized during execution time. These \
-    constants are assigned to the static areas of memory!
+    delete ptr_workArrayTemplate; //Delete dynamically allocated storage for holding a copy of the caller's template.
 } //End of destructor
 
 SS::SS(int n, char *templatePointer, int bufsz, char **tokens, char **replacements, bool debug) {
@@ -151,13 +148,13 @@ SS::SS(int n, char *templatePointer, int bufsz, char **tokens, char **replacemen
         inputTemplate.append( ptr_workArrayTemplate) ; //Input Template is of data type string. You just can't simply assign a \
         c-string to a standard string string!!
         inputTemplateLength = (int)inputTemplate.length();  
-        templateSize = kk; //Does kk == inputTemplateLenght?? YES! For this example kk == inputTemplateLength == 1222 characters.
+//        templateSize = kk; //Does kk == inputTemplateLenght?? YES! For this example kk == inputTemplateLength == 1222 characters.
     } else { //Come here if caller did not supply a template, then we will use the default SQL template.
         if (debug) cout << "Note: the date type of templatePointer is: " << typeid(templatePointer).name() << endl;
-        for (kk=zero; kk < templateSize; kk++) *(ptr_workArrayTemplate + kk) = inputTemplate[kk]; 
+//        for (kk=zero; kk < templateSize; kk++) *(ptr_workArrayTemplate + kk) = inputTemplate[kk]; 
         inputTemplate = default_template;
         inputTemplateLength = (int)inputTemplate.length();
-        templateSize = inputTemplate.size(); 
+//        templateSize = inputTemplate.size(); 
     }
     
     

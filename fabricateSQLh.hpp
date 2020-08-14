@@ -76,7 +76,8 @@ public:
     int number_of_tokens_passed_by_calling_program;
     int inputTemplateLength;
     long resultingStringLength, resultingStringSize;
-    unsigned long  arraySize, templateSize;
+    unsigned long  arraySize;
+//=    unsigned logn templateSize;
     bool debugMode;
     //=char lastChar;
     //=static long *pos; /*Declaration of variable 'position' with deduced type 'auto' requires an initializer */
