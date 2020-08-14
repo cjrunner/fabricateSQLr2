@@ -93,7 +93,7 @@ void SS::doFabricateSQL(int asz, char **theTokens, char **replacements, char *SQ
 SS::~SS() {
     ;  //Destructor seems to be called when the fabricateSQL function executes the delete instruction for deleting the instance \
     object
-    delete ptr_workArrayTemplate; //Delete dynamically allocated storage for holding a copy of the caller's template.
+ //Delete dynamically allocated storage for holding a copy of the caller's template.
 } //End of destructor
 
 SS::SS(int n, char *templatePointer, int bufsz, char **tokens, char **replacements, bool debug) {
@@ -140,8 +140,8 @@ SS::SS(int n, char *templatePointer, int bufsz, char **tokens, char **replacemen
             " characters." <<  endl;
         // come here if caller to this dynamic libary (dylib) function has supplied a pointer to templates. \
         Assume [Required] that this template is a ZERO-terminate array of ASCII characters.
-        char *ptr_workArrayTemplate = new char[lengthOfCallersTemplate + (lengthOfCallersTemplate>>4)]; //allocate a working buffer \
-        sized 16% greater than the size of the caller's template
+        char *ptr_workArrayTemplate = new char[ lengthOfCallersTemplate + (lengthOfCallersTemplate>>3) ]; //allocate a working buffer \
+        sized 12½ % greater than the size of the caller's template
         memcpy(ptr_workArrayTemplate, templatePointer, lengthOfCallersTemplate);
 
         inputTemplate.clear(); //Let's start with a clean input Template.
@@ -149,6 +149,7 @@ SS::SS(int n, char *templatePointer, int bufsz, char **tokens, char **replacemen
         c-string to a standard string string!!
         inputTemplateLength = (int)inputTemplate.length();  
 //        templateSize = kk; //Does kk == inputTemplateLenght?? YES! For this example kk == inputTemplateLength == 1222 characters.
+        delete[] ptr_workArrayTemplate;
     } else { //Come here if caller did not supply a template, then we will use the default SQL template.
         if (debug) cout << "Note: the date type of templatePointer is: " << typeid(templatePointer).name() << endl;
 //        for (kk=zero; kk < templateSize; kk++) *(ptr_workArrayTemplate + kk) = inputTemplate[kk]; 

@@ -79,7 +79,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "164"
             endingLineNumber = "164"
-            landmarkName = "SS::SS(int n, char *templatePointer, int bufsz, char **tokens, char **replacements, bool debug)"
+            landmarkName = "SS::ptfss(string instring, string outstring)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
