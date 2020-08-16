@@ -62,30 +62,33 @@ void fabricateSQL(int asz, char **theTokens, char **replacements, char *oSQLt, c
     auto duration = now.time_since_epoch();
     auto microsec = std::chrono::duration_cast<std::chrono::microseconds>(duration).count();
 */
-    auto totalTimeStart = std::chrono::steady_clock::now();
+    auto start = chrono::steady_clock::now();
+
     auto tpconstructorstart = std::chrono::steady_clock::now();
-    SS *ptrSS = new  SS(asz, oSQLt, bufsize, theTokens, replacements, debug);
-    auto tpconstructorend = tpconstructorstart.time_since_epoch();
     
-    auto doFabricateSQLstart = std::chrono::steady_clock::now();
+    SS *ptrSS = new  SS(asz, oSQLt, bufsize, theTokens, replacements, debug);
+    auto tpconstructorend = std::chrono::steady_clock::now();
+    
+    auto dfs = std::chrono::steady_clock::now();
     ptrSS->doFabricateSQL(asz, theTokens, replacements, oSQLt, cStringBuffer, bufsize, debug);
-    auto tpdoFabricateSQLend = doFabricateSQLstart.time_since_epoch();
+    auto dfe= chrono::steady_clock::now();
     
     auto do_delete_start = std::chrono::steady_clock::now();
     delete ptrSS;   //Delete the instance object , ptrSS, we created before calling doFabricateSQL
-    auto tpdodeleteend = do_delete_start.time_since_epoch();
+    auto tpdodeleteend = std::chrono::steady_clock::now();
     
-    auto totalTimeEnd = totalTimeStart.time_since_epoch();
-    if (debug) cout << "a) std::chrono::microseconds::period::num " << std::chrono::microseconds::period::num \
-        << "b) std::chrono::microseconds::period::den: " << std::chrono::microseconds::period::den \
-        << "\nc) It took " << std::chrono::duration_cast<std::chrono::microseconds>(tpconstructorend).count() \
-        << " µsec to do constructor processing;\nd) It took " \
-        << std::chrono::duration_cast<std::chrono::microseconds>(tpdoFabricateSQLend).count() \
-        << " clock counts to do doFabricateSQL processing;\n e) It took " \
-        << std::chrono::duration_cast<std::chrono::microseconds>(tpdodeleteend).count()  \
-        << " µsec to do delete processing.\n" \
+    auto end = chrono::steady_clock::now();
+    if (debug) cout << "a) std::chrono::nanoseconds::period::num " << std::chrono::nanoseconds::period::num \
+        << "\nb) std::chrono::nanoseconds::period::den: " << std::chrono::nanoseconds::period::den  << "\n=====================\n" \
+        << std::chrono::duration_cast<std::chrono::nanoseconds>(tpconstructorend - tpconstructorstart).count() << "\nc) It took " \
+        << " n-sec to do constructor processing;\nd) It took " \
+        << std::chrono::duration_cast<std::chrono::nanoseconds>(dfe - dfs).count() \
+        << " n-sec to do doFabricateSQL processing;\ne) It took " \
+        << std::chrono::duration_cast<std::chrono::nanoseconds>(tpdodeleteend - do_delete_start).count()  \
+        << " n-sec to do delete processing.\n" \
         << "f) Total execution time " \
-        << std::chrono::duration_cast<std::chrono::microseconds>(totalTimeEnd).count() << " µsec." << endl;
+        << std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count() \
+        << " n-sec." << endl;
 } //Return to caller.
 
 void SS::doFabricateSQL(int asz, char **theTokens, char **replacements, char *SQLt, char *cStringBuffer, int bufsize, bool debug) {

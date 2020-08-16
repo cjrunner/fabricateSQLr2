@@ -51,12 +51,14 @@ private:
     static const int zero=0;
     static const int numberOfPointerArrayElements = 8;
     const multimap<string, string>  dictionary  = {
-        {"SR", "<"},
-        {"SunRise", "<" },
-        {"SUNRISE", "<"},
-        {"SS", ">"},
-        {"SunSet", ">"},
-        {"SUNSET", ">"}
+        {"SR", "<"},        //Whereever you see sr replace SR with <
+        {"SunRise", "<" },    // und so weiter und so weiter
+        {"SUNRISE", "<"},     // und so weiter und so weiter
+        {"sunrise", "<"},     // und so weiter und so weiter
+        {"SS", ">"},          // und so weiter und so weiter
+        {"SunSet", ">"},      // und so weiter und so weiter
+        {"SUNSET", ">"},      // und so weiter und so fort
+        {"sunset", ">"} //Whereever you see sunset replace sunset with >
     };
 //
 public:
