@@ -27,17 +27,65 @@ void fabricateSQL(int asz, char **theTokens, char **replacements, char *oSQLt, c
     the caller's SQL template into executable SQL.
     ;
     if (debug) { 
-        cout << "0. =================================== fabricateSQL =============================================" << \
-        "\n1. input parameters look like:\nasz: " << asz << ":\ntheTokens " << theTokens << "\t*theTokens " << *theTokens << \
-        "\nreplacements: " << replacements << "\t*replacements: " << *replacements << "\noSQLt: " << oSQLt << "\t*oSQLt: " << \
-        *oSQLt << "\ncStringBuffer: " << cStringBuffer << "\t*cStringBuffer: " << *cStringBuffer << "\nbufsize: " << bufsize << \
-        "\ndebug: " << debug << endl;
+        cout << "0. =================================== entering fabricateSQL =============================================" \
+        << "\n1. input parameters look like:\nasz: " \
+        << asz \
+        << ":\ntheTokens " \
+        << theTokens \
+        << "\t*theTokens " \
+        << *theTokens
+        << "\nreplacements: " \
+        << replacements \
+        << "\t*replacements: " \
+        << *replacements \
+        << "\noSQLt: " \
+        << oSQLt
+        << "\t*oSQLt: "
+        << *oSQLt \
+        << "\ncStringBuffer: " \
+        << cStringBuffer \
+        << "\t*cStringBuffer: " \
+        << *cStringBuffer \
+        << "\nbufsize: " \
+        << bufsize \
+        << "\ndebug: " \
+        << debug \
+        << endl;
     }
-    
-    
+/*
+ std::chrono::time_point<std::chrono::system_clock> now = std::chrono::system_clock::now();
+ auto duration = now.time_since_epoch();
+ auto millis = std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
+ 
+
+    std::chrono::time_point<std::chrono::system_clock> now = std::chrono::system_clock::now();
+    auto duration = now.time_since_epoch();
+    auto microsec = std::chrono::duration_cast<std::chrono::microseconds>(duration).count();
+*/
+    auto totalTimeStart = std::chrono::steady_clock::now();
+    auto tpconstructorstart = std::chrono::steady_clock::now();
     SS *ptrSS = new  SS(asz, oSQLt, bufsize, theTokens, replacements, debug);
+    auto tpconstructorend = tpconstructorstart.time_since_epoch();
+    
+    auto doFabricateSQLstart = std::chrono::steady_clock::now();
     ptrSS->doFabricateSQL(asz, theTokens, replacements, oSQLt, cStringBuffer, bufsize, debug);
+    auto tpdoFabricateSQLend = doFabricateSQLstart.time_since_epoch();
+    
+    auto do_delete_start = std::chrono::steady_clock::now();
     delete ptrSS;   //Delete the instance object , ptrSS, we created before calling doFabricateSQL
+    auto tpdodeleteend = do_delete_start.time_since_epoch();
+    
+    auto totalTimeEnd = totalTimeStart.time_since_epoch();
+    if (debug) cout << "a) std::chrono::microseconds::period::num " << std::chrono::microseconds::period::num \
+        << "b) std::chrono::microseconds::period::den: " << std::chrono::microseconds::period::den \
+        << "\nc) It took " << std::chrono::duration_cast<std::chrono::microseconds>(tpconstructorend).count() \
+        << " µsec to do constructor processing;\nd) It took " \
+        << std::chrono::duration_cast<std::chrono::microseconds>(tpdoFabricateSQLend).count() \
+        << " clock counts to do doFabricateSQL processing;\n e) It took " \
+        << std::chrono::duration_cast<std::chrono::microseconds>(tpdodeleteend).count()  \
+        << " µsec to do delete processing.\n" \
+        << "f) Total execution time " \
+        << std::chrono::duration_cast<std::chrono::microseconds>(totalTimeEnd).count() << " µsec." << endl;
 } //Return to caller.
 
 void SS::doFabricateSQL(int asz, char **theTokens, char **replacements, char *SQLt, char *cStringBuffer, int bufsize, bool debug) {
@@ -124,11 +172,16 @@ SS::SS(int n, char *templatePointer, int bufsz, char **tokens, char **replacemen
             
             work2.clear();
             auto position = dictionary.find( string(ptrcopyOfReplacements[i]) );
-            work2 = position->second; //work2 should be either a ">" or a "<"
+            if (position == dictionary.end() ) { //This check is used to determine if we failed to find anything in dictionary.
+                cerr << "We failed to find the replacement character for " << ptrcopyOfReplacements[i] << ". " \
+                << ptrcopyOfReplacements[i] << "; position->first: '" << position->first << "'; position->second: '"  \
+                << position->second << "'.!!" << endl;
+            } else {
+                work2 = position->second; //work2 should be either a ">" or a "<"
+                std::strcpy(cstring_workArray, &work2.c_str()[0] );
 
-            std::strcpy(cstring_workArray, &work2.c_str()[0] ); 
-
-            std::strcpy(ptrcopyOfReplacements[i], cstring_workArray);
+                std::strcpy(ptrcopyOfReplacements[i], cstring_workArray);
+            } // end of error-check if/else
         } //               End of If/Else
     } //                   End of outer for loop.
     
@@ -149,7 +202,7 @@ SS::SS(int n, char *templatePointer, int bufsz, char **tokens, char **replacemen
         c-string to a standard string string!!
         inputTemplateLength = (int)inputTemplate.length();  
 //        templateSize = kk; //Does kk == inputTemplateLenght?? YES! For this example kk == inputTemplateLength == 1222 characters.
-        delete[] ptr_workArrayTemplate;
+        delete[] ptr_workArrayTemplate;  //Must do delete[ ] because we did  `new char [ ... ]`
     } else { //Come here if caller did not supply a template, then we will use the default SQL template.
         if (debug) cout << "Note: the date type of templatePointer is: " << typeid(templatePointer).name() << endl;
 //        for (kk=zero; kk < templateSize; kk++) *(ptr_workArrayTemplate + kk) = inputTemplate[kk]; 
