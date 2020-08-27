@@ -63,9 +63,7 @@ void fabricateSQL(int asz, char **theTokens, char **replacements, char *oSQLt, c
     auto microsec = std::chrono::duration_cast<std::chrono::microseconds>(duration).count();
 */
     auto start = chrono::steady_clock::now();
-
     auto tpconstructorstart = std::chrono::steady_clock::now();
-    
     SS *ptrSS = new  SS(asz, oSQLt, bufsize, theTokens, replacements, debug);
     auto tpconstructorend = std::chrono::steady_clock::now();
     
@@ -78,7 +76,7 @@ void fabricateSQL(int asz, char **theTokens, char **replacements, char *oSQLt, c
     auto tpdodeleteend = std::chrono::steady_clock::now();
     
     auto end = chrono::steady_clock::now();
-    if (debug) cout << "a) std::chrono::nanoseconds::period::num " << std::chrono::nanoseconds::period::num \
+    if (debug) clog << "a) std::chrono::nanoseconds::period::num " << std::chrono::nanoseconds::period::num \
         << "\nb) std::chrono::nanoseconds::period::den: " << std::chrono::nanoseconds::period::den  << "\n=====================\n" \
         << std::chrono::duration_cast<std::chrono::nanoseconds>(tpconstructorend - tpconstructorstart).count() << "\nc) It took " \
         << " n-sec to do constructor processing;\nd) It took " \
