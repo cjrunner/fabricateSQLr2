@@ -7,14 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2B3AEC0124DED7A400F470E1 /* fabricateSQLh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2B3AEBFF24DED7A400F470E1 /* fabricateSQLh.cpp */; };
-		2B3AEC0224DED7A400F470E1 /* fabricateSQLh.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 2B3AEC0024DED7A400F470E1 /* fabricateSQLh.hpp */; };
+		2B3AEC0124DED7A400F470E1 /* fabricateSQLr2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2B3AEBFF24DED7A400F470E1 /* fabricateSQLr2.cpp */; };
+		2B3AEC0224DED7A400F470E1 /* fabricateSQLr2.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 2B3AEC0024DED7A400F470E1 /* fabricateSQLr2.hpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		2B3AEBF824DED76200F470E1 /* libfabricateSQL-r1.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "libfabricateSQL-r1.dylib"; sourceTree = BUILT_PRODUCTS_DIR; };
-		2B3AEBFF24DED7A400F470E1 /* fabricateSQLh.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = fabricateSQLh.cpp; sourceTree = "<group>"; };
-		2B3AEC0024DED7A400F470E1 /* fabricateSQLh.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = fabricateSQLh.hpp; sourceTree = "<group>"; };
+		2B3AEBF824DED76200F470E1 /* libfabricateSQLr2.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libfabricateSQLr2.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		2B3AEBFF24DED7A400F470E1 /* fabricateSQLr2.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = fabricateSQLr2.cpp; sourceTree = "<group>"; };
+		2B3AEC0024DED7A400F470E1 /* fabricateSQLr2.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = fabricateSQLr2.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -31,8 +31,8 @@
 		2B3AEBEF24DED76200F470E1 = {
 			isa = PBXGroup;
 			children = (
-				2B3AEBFF24DED7A400F470E1 /* fabricateSQLh.cpp */,
-				2B3AEC0024DED7A400F470E1 /* fabricateSQLh.hpp */,
+				2B3AEBFF24DED7A400F470E1 /* fabricateSQLr2.cpp */,
+				2B3AEC0024DED7A400F470E1 /* fabricateSQLr2.hpp */,
 				2B3AEBF924DED76200F470E1 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -40,7 +40,7 @@
 		2B3AEBF924DED76200F470E1 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				2B3AEBF824DED76200F470E1 /* libfabricateSQL-r1.dylib */,
+				2B3AEBF824DED76200F470E1 /* libfabricateSQLr2.dylib */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -52,16 +52,16 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2B3AEC0224DED7A400F470E1 /* fabricateSQLh.hpp in Headers */,
+				2B3AEC0224DED7A400F470E1 /* fabricateSQLr2.hpp in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		2B3AEBF724DED76200F470E1 /* fabricateSQL-r1 */ = {
+		2B3AEBF724DED76200F470E1 /* fabricateSQLr2 */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 2B3AEBFC24DED76200F470E1 /* Build configuration list for PBXNativeTarget "fabricateSQL-r1" */;
+			buildConfigurationList = 2B3AEBFC24DED76200F470E1 /* Build configuration list for PBXNativeTarget "fabricateSQLr2" */;
 			buildPhases = (
 				2B3AEBF424DED76200F470E1 /* Headers */,
 				2B3AEBF524DED76200F470E1 /* Sources */,
@@ -71,9 +71,9 @@
 			);
 			dependencies = (
 			);
-			name = "fabricateSQL-r1";
+			name = fabricateSQLr2;
 			productName = fabricateSQL;
-			productReference = 2B3AEBF824DED76200F470E1 /* libfabricateSQL-r1.dylib */;
+			productReference = 2B3AEBF824DED76200F470E1 /* libfabricateSQLr2.dylib */;
 			productType = "com.apple.product-type.library.dynamic";
 		};
 /* End PBXNativeTarget section */
@@ -90,7 +90,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 2B3AEBF324DED76200F470E1 /* Build configuration list for PBXProject "fabricateSQL-r1" */;
+			buildConfigurationList = 2B3AEBF324DED76200F470E1 /* Build configuration list for PBXProject "fabricateSQLr2" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -102,7 +102,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				2B3AEBF724DED76200F470E1 /* fabricateSQL-r1 */,
+				2B3AEBF724DED76200F470E1 /* fabricateSQLr2 */,
 			);
 		};
 /* End PBXProject section */
@@ -112,7 +112,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2B3AEC0124DED7A400F470E1 /* fabricateSQLh.cpp in Sources */,
+				2B3AEC0124DED7A400F470E1 /* fabricateSQLr2.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -259,7 +259,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		2B3AEBF324DED76200F470E1 /* Build configuration list for PBXProject "fabricateSQL-r1" */ = {
+		2B3AEBF324DED76200F470E1 /* Build configuration list for PBXProject "fabricateSQLr2" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2B3AEBFA24DED76200F470E1 /* Debug */,
@@ -268,7 +268,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		2B3AEBFC24DED76200F470E1 /* Build configuration list for PBXNativeTarget "fabricateSQL-r1" */ = {
+		2B3AEBFC24DED76200F470E1 /* Build configuration list for PBXNativeTarget "fabricateSQLr2" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2B3AEBFD24DED76200F470E1 /* Debug */,

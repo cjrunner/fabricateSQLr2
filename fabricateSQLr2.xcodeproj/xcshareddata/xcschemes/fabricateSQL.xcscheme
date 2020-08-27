@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "2B3AEBF724DED76200F470E1"
-               BuildableName = "libfabricateSQL-r1.dylib"
-               BlueprintName = "fabricateSQL-r1"
-               ReferencedContainer = "container:fabricateSQL-r1.xcodeproj">
+               BuildableName = "libfabricateSQLr2.dylib"
+               BlueprintName = "fabricateSQLr2"
+               ReferencedContainer = "container:fabricateSQLr2.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -46,9 +46,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2B3AEBF724DED76200F470E1"
-            BuildableName = "libfabricateSQL-r1.dylib"
-            BlueprintName = "fabricateSQL-r1"
-            ReferencedContainer = "container:fabricateSQL-r1.xcodeproj">
+            BuildableName = "libfabricateSQLr2.dylib"
+            BlueprintName = "fabricateSQLr2"
+            ReferencedContainer = "container:fabricateSQLr2.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -64,9 +64,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2B3AEBF724DED76200F470E1"
-            BuildableName = "libfabricateSQL-r1.dylib"
-            BlueprintName = "fabricateSQL-r1"
-            ReferencedContainer = "container:fabricateSQL-r1.xcodeproj">
+            BuildableName = "libfabricateSQLr2.dylib"
+            BlueprintName = "fabricateSQLr2"
+            ReferencedContainer = "container:fabricateSQLr2.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </ProfileAction>

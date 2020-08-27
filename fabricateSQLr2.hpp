@@ -30,6 +30,9 @@ using namespace std;
 //"SRorSS" = '>' means doing SunSet; "SRorSS" = "<" means doing SunRise.
 class SS {
 private:
+    static const int zero=0;
+    static const unsigned long tokenColumn = 0;
+    static const unsigned long replacementColumn = 1;
     const string default_template = \
     "SELECT * FROM tbl_sun_loc_site \
     WHERE lt::DATE='_DATE_' AND siteid=SITEID AND id BETWEEN \
@@ -48,9 +51,10 @@ private:
     const int len_sunsetSQL_template = (int)default_template.length(); //Static is NOT needed because length of default_template \
     is determined during the execution phase.
     static char *const ptr_workArrayTemplate; //= workArrayTemplate;
-    static const int zero=0;
-    static const int numberOfPointerArrayElements = 8;
+
     const multimap<string, string>  dictionary  = {
+        {"Term",""},
+        {"TERM",""},
         {"SR", "<"},        //Whereever you see sr replace SR with <
         {"SunRise", "<" },    // und so weiter und so weiter
         {"SUNRISE", "<"},     // und so weiter und so weiter
@@ -66,7 +70,8 @@ public:
     int i;
     int j;
     int kk; 
-    int number_of_tokens_passed_by_calling_program;
+    static int number_of_tokens_passed_by_calling_program;
+    static int numberOfPointerArrayElements;
     int inputTemplateLength;
     long resultingStringLength, resultingStringSize;
     unsigned long  arraySize;
@@ -81,11 +86,19 @@ public:
     
     unsigned int lengthOfCallersTemplate;
     const char *sr_or_ss = "SRorSS";
-    char cstring_workArray[numberOfPointerArrayElements];
+    
+    string  **ptrPtrCopyOfTokensAsString;
+    string  **ptrPtrCopyOfReplacementsAsString;
+    char **ptrPtrCopyOfReplacements;
+    char **ptrPtrCopyOfTokens;
+//    char **ptrPtrCstring_WorkArray[numberOfPointerArrayElements];
+    char **ptrPtrCstring_WorkArray;
+/*
     char **ptrptrcopyOfReplacements[numberOfPointerArrayElements];
     char **ptrptrcopyOfTokens[numberOfPointerArrayElements];
     char *ptrcopyOfReplacements[numberOfPointerArrayElements]; 
     char *ptrcopyOfTokens[numberOfPointerArrayElements];
+*/
     string rpl; //Once converted to standard string from c-string, Stick the token's replacement value here
     std::regex tokenAsRegularExpression;
     int caller_supplied_buffer_size = zero;
@@ -97,9 +110,9 @@ public:
 //=    char workArrayTemplate[templateBufferSize]; //Space reserved for holding, as a c-string, standard string found in \
     default_template, above.
 
-    SS(int, char *, int, char **, char **, bool);
+    SS(int, char *, int, char **, bool);
     ~SS();
-    void doFabricateSQL(int, char **, char **, char *, char *, int, bool);
+    void doFabricateSQL(int, char **, char *, char *, int, bool);
     string ptfss(string, string );
 };
 
