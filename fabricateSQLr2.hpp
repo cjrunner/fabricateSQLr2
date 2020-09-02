@@ -29,14 +29,17 @@
 #include <chrono>
 #include <strstream>
 #include <sstream>
+#include <fabricateSQLr2.h>
 using namespace std;
 //"SRorSS" = '>' means doing SunSet; "SRorSS" = "<" means doing SunRise.
+/*
 typedef struct timings {
     unsigned long constructorTime;
     unsigned long fabricateTime;
     unsigned long deleteTime;
     unsigned long totalTime;
 } timings;
+*/
 class SS {
 private:
     static const int zero=0;
@@ -143,10 +146,5 @@ public:
         {"PTF1", 1},
         {"PTF2", 2}
     };
-//     typedef (*p0)(const string, const string, SS*);
-    
 };
-
-
-
 #endif /* fabricateSQLh */

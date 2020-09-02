@@ -8,7 +8,7 @@
 // ------------------------------------------------------+
 #include "fabricateSQLr2.hpp"
 
-extern "C" void fabricateSQLr2(timings *, char **, char *, char *, int, bool=false); //This is used so a "C" program can call \
+// extern "C" void fabricateSQLr2(timings *, char **, char *, char *, int, bool=false); //This is used so a "C" program can call \
 this c++ program
 //
 //void fabricateSQL(int, char *, char *, char *, char *, int);
@@ -24,10 +24,8 @@ this c++ program
 //                    |                    |                    |                      |             |            |
 //                    V                    V                    V                      V             V            V
 void fabricateSQLr2(timings *sb, char **theTokensReplacements,  char *oSQLt, char *cStringBuffer, int bufsize, bool debug) {
-    //Note: fabricateSQL serves as a between the caller and doFabricateSQL, which performs the work of transforming \
+    //Note: fabricateSQL serves as an API between the caller and doFabricateSQL, which performs the work of transforming \
     the caller's SQL template into executable SQL.
-    // create special output buffer
-    
     // initialize output stream with that output buffer
     if (debug) {
         cout << "0. =================================== entering fabricateSQLr2 =============================================" \
@@ -59,7 +57,9 @@ void fabricateSQLr2(timings *sb, char **theTokensReplacements,  char *oSQLt, cha
      auto duration = now.time_since_epoch();
      auto microsec = std::chrono::duration_cast<std::chrono::microseconds>(duration).count();
      */
-    if (sb) { /* record performance data if sb is NOT null */
+    if (sb) { /* Will record performance data if sb is NOT null but instead points to a valid caller supplied area of memory, \
+        as mapped by include file /usr/local/include/fabricateSQL/fabricateSQLr2.h per the timings struct.
+    */
         auto start = std::chrono::steady_clock::now();
         auto tpconstructorstart = std::chrono::steady_clock::now();
         SS *ptrSS = new  SS(oSQLt, bufsize, theTokensReplacements, debug); 
