@@ -15,28 +15,29 @@ this c++ program
 // If true then in debug mode. Default is false ------------------------------------------------------------------+
 // size of the SQL template-containing cStringBuffer. If bufsize = 0 then use the default template --+            |
 // pointer to fabricateSQL's result return buffer   -----------------------------------+             |            |
-// Original SQL Template (TBD) ---------------------------------+                      |             |            |
+// Caller's SQL Template (TBD) ---------------------------------+                      |             |            |
 //                                                              |                      |             |            |
 // token/replacement 2-dimensional array --+                    |                      |             |            |
-// timing buffer -----+                    |                    |                      |             |            |
-//                    |                    |                    |                      |             |            |
-//                    |                    |                    |                      |             |            |
-//                    |                    |                    |                      |             |            |
-//                    V                    V                    V                      V             V            V
+// timing buffer (if needed,+              |                    |                      |             |            |
+//    can be nullptr if     |              |                    |                      |             |            |
+//    timing NOT needed)    |              |                    |                      |             |            |
+//                          |              |                    |                      |             |            |
+//                          V              V                    V                      V             V            V
 void fabricateSQLr2(timings *sb, char **theTokensReplacements,  char *oSQLt, char *cStringBuffer, int bufsize, bool debug) {
     //Note: fabricateSQL serves as an API between the caller and doFabricateSQL, which performs the work of transforming \
     the caller's SQL template into executable SQL.
     // initialize output stream with that output buffer
-    if (debug) {
+    if (debug ) {
         cout << "0. =================================== entering fabricateSQLr2 =============================================" \
-        << "\n1. input parameters look like:\nsb (buffer for containing performance data): " \
-        << sb \
+        << "\n1. input parameters look like: " ;
+        if (sb) {
+            cout \
+            << "\nsb (buffer for containing performance data): " \
+            << sb;
+        }
+        cout \
         << ":\ntheTokensReplacements " \
         << theTokensReplacements \
-        << "\noSQLt: " \
-        << oSQLt \
-        << "\t*oSQLt: "
-        << *oSQLt \
         << "\ncStringBuffer: " \
         << cStringBuffer \
         << "\t*cStringBuffer: " \
@@ -46,7 +47,19 @@ void fabricateSQLr2(timings *sb, char **theTokensReplacements,  char *oSQLt, cha
         << "\ndebug: " \
         << debug \
         << endl;
+        if (*oSQLt) {
+            cout \
+            << "\noSQLt: " \
+            << oSQLt \
+            << "\t*oSQLt: "
+            << *oSQLt \
+            << endl;
+
+        } else {
+            cout << "*oSQLt is nullptr, therefore will use our own internally defined SQL template." << endl;
+        }
     }
+    
     /*
      std::chrono::time_point<std::chrono::system_clock> now = std::chrono::system_clock::now();
      auto duration = now.time_since_epoch();
@@ -132,7 +145,7 @@ void SS::doFabricateSQLr2( char **theTokensReplacements, char *SQLt, char *cStri
     
     resultingStringLength = inputTemplate.length();
     resultingStringSize   = inputTemplate.size();
-    inputTemplate.insert(resultingStringLength, 3, '\0'); //Pop in three characters of value 0 (not character zero \
+//    inputTemplate.insert(resultingStringLength, 3, '\0'); //Pop in three characters of value 0 (not character zero \
     which has a value of 0x30, what we want is a value of 0x00)
     std::strcpy (cStringBuffer, inputTemplate.c_str() ); //Before returning, convert our result, of type standard string, to \
     type c_string so C programs, which are oblivious to c++ type standard string and lack a c-string-terminating 0x'\0' character, \

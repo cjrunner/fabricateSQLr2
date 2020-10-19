@@ -95,7 +95,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "157"
             endingLineNumber = "157"
-            landmarkName = "SS::~SS()"
+            landmarkName = "SS::doFabricateSQLr2( char **theTokensReplacements, char *SQLt, char *cStringBuffer, int bufsize, bool debug)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

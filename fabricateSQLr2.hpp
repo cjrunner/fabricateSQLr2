@@ -47,18 +47,18 @@ private:
     static const unsigned long replacementColumn = 1;
     const string default_template = \
     "SELECT * FROM tbl_sun_loc_site \
-    WHERE lt::DATE='_DATE_' AND siteid=SITEID AND id BETWEEN \
-    -BEFORESUNSET + ( SELECT id FROM (SELECT *,abs(zenithdistance-SUNSETDEF) \
+    WHERE lt::DATE='_DATE_' AND siteid = SITEID AND id BETWEEN \
+    - BEFOREDATAPOINTS + ( SELECT id FROM (SELECT *,abs(zenithdistance - SUNSETDEF) \
     FROM tbl_sun_loc_site WHERE lt::DATE='_DATE_' AND siteid=SITEID AND events IS NULL AND id SRorSS (SELECT avg(id) FROM tbl_sun_loc_site \
-    WHERE lt::DATE='_DATE_' AND siteid=SITEID AND events IS NULL)) a WHERE abs(zenithdistance-SUNSETDEF) = \
-    (SELECT min(abs(zenithdistance-SUNSETDEF)) FROM tbl_sun_loc_site WHERE lt::DATE='_DATE_' AND siteid=SITEID AND events IS NULL AND id SRorSS \
+    WHERE lt::DATE='_DATE_' AND siteid = SITEID AND events IS NULL)) a WHERE abs(zenithdistance - SUNSETDEF) = \
+    (SELECT min(abs(zenithdistance - SUNSETDEF)) FROM tbl_sun_loc_site WHERE lt::DATE='_DATE_' AND siteid = SITEID AND events IS NULL AND id SRorSS \
     (SELECT avg(id) FROM tbl_sun_loc_site where lt::DATE='_DATE_' AND siteid=SITEID AND events IS NULL))  ) \
     AND     \
-    +AFTERSUNSET + ( SELECT id FROM (SELECT *,abs(zenithdistance-SUNSETDEF) \
+    + AFTERDATAPOINTS + ( SELECT id FROM (SELECT *,abs(zenithdistance - SUNSETDEF) \
     FROM tbl_sun_loc_site WHERE lt::DATE='_DATE_' AND siteid=SITEID AND events IS NULL AND id SRorSS (SELECT avg(id) FROM tbl_sun_loc_site \
-    WHERE lt::DATE='_DATE_' AND siteid=SITEID AND events IS NULL)) a WHERE abs(zenithdistance-SUNSETDEF) = \
-    (SELECT min(abs(zenithdistance-SUNSETDEF)) FROM tbl_sun_loc_site WHERE lt::DATE='_DATE_' AND siteid=SITEID AND events IS NULL AND id SRorSS \
-    (SELECT avg(id) FROM tbl_sun_loc_site WHERE lt::DATE='_DATE_' AND siteid=SITEID AND events IS NULL))   ) \
+    WHERE lt::DATE='_DATE_' AND siteid = SITEID AND events IS NULL)) a WHERE abs(zenithdistance - SUNSETDEF) = \
+    (SELECT min(abs(zenithdistance - SUNSETDEF)) FROM tbl_sun_loc_site WHERE lt::DATE='_DATE_' AND siteid = SITEID AND events IS NULL AND id SRorSS \
+    (SELECT avg(id) FROM tbl_sun_loc_site WHERE lt::DATE='_DATE_' AND siteid = SITEID AND events IS NULL))   ) \
     ORDER BY id;";
     const int len_sunsetSQL_template = (int)default_template.length(); //Static is NOT needed because length of default_template \
     is determined during the execution phase.
