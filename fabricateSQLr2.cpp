@@ -151,6 +151,7 @@ void SS::doFabricateSQLr2( char **theTokensReplacements, char *SQLt, char *cStri
     type c_string so C programs, which are oblivious to c++ type standard string and lack a c-string-terminating 0x'\0' character, \
     can use this data.
     kk = 0;
+    /*
     while ( kk <=  resultingStringSize ) {
         if ( cStringBuffer[kk] != ';') { //cStringBuffer is supplied by the caller. It is the caller's responsibility to make sure \
             cStringBuffer is sufficiently sized to hole the resulting stirng found in
@@ -163,6 +164,10 @@ void SS::doFabricateSQLr2( char **theTokensReplacements, char *SQLt, char *cStri
             break;
         }
     }
+     */
+    cStringBuffer[resultingStringSize+1]='\0';
+    cStringBuffer[resultingStringSize+2]='\0';
+    cStringBuffer[resultingStringSize+3]='\0';
 }  // End of doFabricateSQL
 
 SS::~SS() {
