@@ -29,6 +29,7 @@
 #include <chrono>
 #include <strstream>
 #include <sstream>
+#include <stddef.h>
 #include <fabricateSQLr2.h>
 using namespace std;
 //"SRorSS" = '>' means doing SunSet; "SRorSS" = "<" means doing SunRise.
@@ -40,7 +41,9 @@ typedef struct timings {
     unsigned long totalTime;
 } timings;
 */
+
 class SS {
+
 private:
     static const int zero=0;
     static const unsigned long tokenColumn = 0;
@@ -79,11 +82,10 @@ private:
     };
 //  ============================================================================================================================
 public:
-
     const char *sr_or_ss = "SRorSS";
     int i;
     int j;
-    int kk; 
+    int kk;
     const unsigned int number_of_tokens_passed_by_calling_program = 10;
 //    static int numberOfPointerArrayElements;
     int inputTemplateLength;
@@ -132,19 +134,46 @@ public:
     default_template, above.
     string stringTerm = "Term";
     string stringTERM = "TERM";
-
+    const string *ptrS1 = &stringin1;
+    const string *ptrS2 = &stringin2;
 //    SS(char *, char *, int, char **, bool);
     SS(char *, int, char **, bool);
     ~SS();
-    void doFabricateSQLr2(timings *, char **, char *, char *, int, bool);
-    void doFabricateSQLr2( char **, char *, char *, int, bool);
+ //   void ptfss(int theindex, const string *instring1, const string *instring2, SS *thisInstanceObject);
+//    Returns the amount of data in the output buffer
+// Debug mode (Provides output of intermediate results if ture) --------------+
+// Amount of data in 1-D array of output data ----------------------+         |
+// Pointer to 1-D array of output data ------------------------+    |         |
+// Size of the token array ----------------------------+       |    |         |
+// Pointer to 1-D Token Array --------------------+    |       |    |         |
+// 2-D Array of Token/Replacement Pairs -+        |    |       |    |         |
+// Timing Data, if NOT NULL ---+         |        |    |       |    |         |
+//                             |         |        |    |       |    |         |
+//                             V         V        V    V       V    V         V
+    void doFabricateSQLr2(timings *, char **, char *, int, char *, size_t *, bool=true);
+    void doFabricateSQLr2(           char **, char *, int, char *, size_t *, bool=false);
 //    void doFabricateSQLr2(char **, char *, char *, int, bool);
-    static void ptfss(const string, const string, SS* ); //Because this is the object of a pointer to function, named p1, this function must be stored in static storage.
-    void (*p1)(const string, const string, SS*); //pointer to function, named p1, which will point to ptfss.
-    const multimap<string, int> index_ptf {
-        {"PTF0", 0},
-        {"PTF1", 1},
-        {"PTF2", 2}
+    static void ptfss(int, const string *, const string *, SS* ); //Because this is the object of a pointer to function, named p1, \
+    this function must be stored in static storage.
+//    static void (*p1)(int, const string *, const string *, SS*); //pointer to function, named p1, which will point to ptfss.
+ //   void (*fp)(int, const string *, const string *, SS* );
+    void (*fp)(int, const string *, const string *, SS* );
+    typedef struct mm { //Need the mm here or else we get an error message about not allowing pointer to function in "annonymous" struct.
+        int index;
+// void (*p1)(int, const string *, const string *, SS*); //Needs to have the `(int, const string *, const string *, SS*)`. \
+        Just void (*p1) will not do!
+        const string *firstString;
+        const string *secondString;
+    } mm;
+    mm array[3];
+    mm *ptrarray;
+    
+//Let's try, just for grins, to include a typedef within the multimap that contains a pointer to function; this approach would \
+    encourage table-driven processing
+    const map<string, mm> index_ptf {
+        {"PTF0", array[0] },
+        {"PTF1", array[1] },
+        {"PTF2", array[2] }
     };
 };
 #endif /* fabricateSQLh */

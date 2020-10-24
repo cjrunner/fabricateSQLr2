@@ -12,23 +12,24 @@
 this c++ program
 //
 //void fabricateSQL(int, char *, char *, char *, char *, int);
-// If true then in debug mode. Default is false ------------------------------------------------------------------+
-// size of the SQL template-containing cStringBuffer. If bufsize = 0 then use the default template --+            |
-// pointer to fabricateSQL's result return buffer   -----------------------------------+             |            |
-// Caller's SQL Template (TBD) ---------------------------------+                      |             |            |
-//                                                              |                      |             |            |
-// token/replacement 2-dimensional array --+                    |                      |             |            |
-// timing buffer (if needed,+              |                    |                      |             |            |
-//    can be nullptr if     |              |                    |                      |             |            |
-//    timing NOT needed)    |              |                    |                      |             |            |
-//                          |              |                    |                      |             |            |
-//                          V              V                    V                      V             V            V
-void fabricateSQLr2(timings *sb, char **theTokensReplacements,  char *oSQLt, char *cStringBuffer, int bufsize, bool debug) {
+// If true then in debug mode. Default is false ---------------------------------------------------------------------------------+
+// Pointer to amount of data fabricateSQLr2 has placed in return buffer (cStringBuffer)--------------------------+               |
+// pointer to location where fabricateSQLr2 will place the SQL it just constructed  ----------------+            |               |
+// Template size. If bufsize = 0 then use the default template -----------------------+             |            |               |
+// Caller's SQL Template ---------------------------------------+                     |             |            |               |
+//                                                              |                     |             |            |               |
+// token/replacement 2-dimensional array --+                    |                     |             |            |               |
+// timing buffer (if needed,+              |                    |                     |             |            |               |
+//    can be nullptr if     |              |                    |                     |             |            |               |
+//    timing NOT needed)    |              |                    |                     |             |            |               |
+//                          |              |                    |                     |             |            |               |
+//                          V              V                    V                     V             V            V               V
+void fabricateSQLr2(timings *sb, char **theTokensReplacements, char *oSQLt, int bufsize, char *cStringBuffer, size_t *outsize, bool debug) {
     //Note: fabricateSQL serves as an API between the caller and doFabricateSQL, which performs the work of transforming \
     the caller's SQL template into executable SQL.
     // initialize output stream with that output buffer
-    if (debug ) {
-        cout << "0. =================================== entering fabricateSQLr2 =============================================" \
+    if (debug) {
+        cout << "0. =================================== entering fabricateSQLr2 in debug mode ===================================" \
         << "\n1. input parameters look like: " ;
         if (sb) {
             cout \
@@ -47,7 +48,7 @@ void fabricateSQLr2(timings *sb, char **theTokensReplacements,  char *oSQLt, cha
         << "\ndebug: " \
         << debug \
         << endl;
-        if (*oSQLt) {
+        if (*oSQLt != 0) {
             cout \
             << "\noSQLt: " \
             << oSQLt \
@@ -58,18 +59,8 @@ void fabricateSQLr2(timings *sb, char **theTokensReplacements,  char *oSQLt, cha
         } else {
             cout << "*oSQLt is nullptr, therefore will use our own internally defined SQL template." << endl;
         }
-    }
+    } //End of debug mode output
     
-    /*
-     std::chrono::time_point<std::chrono::system_clock> now = std::chrono::system_clock::now();
-     auto duration = now.time_since_epoch();
-     auto millis = std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
-     
-     
-     std::chrono::time_point<std::chrono::system_clock> now = std::chrono::system_clock::now();
-     auto duration = now.time_since_epoch();
-     auto microsec = std::chrono::duration_cast<std::chrono::microseconds>(duration).count();
-     */
     if (sb) { /* Will record performance data if sb is NOT null but instead points to a valid caller supplied area of memory, \
         as mapped by include file /usr/local/include/fabricateSQL/fabricateSQLr2.h per the timings struct.
     */
@@ -79,7 +70,7 @@ void fabricateSQLr2(timings *sb, char **theTokensReplacements,  char *oSQLt, cha
         auto tpconstructorend = std::chrono::steady_clock::now();
         
         auto dfs = std::chrono::steady_clock::now();
-        ptrSS->doFabricateSQLr2( theTokensReplacements, oSQLt, cStringBuffer, bufsize, debug);
+        ptrSS->doFabricateSQLr2( theTokensReplacements, oSQLt, bufsize, cStringBuffer, outsize, debug);
         auto dfe= std::chrono::steady_clock::now();
         
         auto do_delete_start = std::chrono::steady_clock::now();
@@ -91,7 +82,7 @@ void fabricateSQLr2(timings *sb, char **theTokensReplacements,  char *oSQLt, cha
         sb->fabricateTime = (dfe-dfs).count();
         sb->deleteTime = (tpdodeleteend-do_delete_start).count();
         sb->totalTime = (end-start).count();
-        cout << "a) std::chrono::nanoseconds::period::num " << std::chrono::nanoseconds::period::num \
+        if (debug) cout << "a) std::chrono::nanoseconds::period::num " << std::chrono::nanoseconds::period::num \
         << "\nb) std::chrono::nanoseconds::period::den: " << std::chrono::nanoseconds::period::den  << "\n=================\n" \
         << "\nc) It took " << sb->constructorTime \
         << " n-sec to do constructor processing;\nd) It took " \
@@ -108,14 +99,29 @@ void fabricateSQLr2(timings *sb, char **theTokensReplacements,  char *oSQLt, cha
 //        sb = buffer.str();
     } else {
         SS *ptrSS = new  SS(oSQLt, bufsize, theTokensReplacements, debug);
-        ptrSS->doFabricateSQLr2( theTokensReplacements, oSQLt, cStringBuffer, bufsize, debug);
+        ptrSS->doFabricateSQLr2( theTokensReplacements, oSQLt, bufsize, cStringBuffer, outsize, debug);
         delete ptrSS;   //Delete the instance object , ptrSS, we created before calling doFabricateSQL
-    }
+    } //End of timing buffer setup.
     
 } //Return to caller.
 
-void SS::doFabricateSQLr2( char **theTokensReplacements, char *SQLt, char *cStringBuffer, int bufsize, bool debug) {
-    ;
+void SS::doFabricateSQLr2(char **theTokensReplacements, char *SQLt, int bufsize, char *cStringBuffer, size_t *outsize, bool debug) {
+    ptrarray = &array[0];
+    array[0].index = 0;
+    array[0].firstString = ptrS1;
+    array[0].secondString = ptrS2;
+    array[1].index = 1;
+    array[1].firstString = ptrS1;
+    array[1].secondString = ptrS2;
+    array[2].index = 2;
+    array[2].firstString = ptrS1;
+    array[2].secondString = ptrS2;
+    fp = &SS::ptfss; //This works! function pointer, named fp, does make it to member function SS::ptfss.
+//    ptr_fun(<#_Result (*__f)(_Arg)#>) = SS::ptfss;
+//    ptr_fun( (*SS::ptfss)(i, ptrS1, ptrS2, this  ));
+//    (ptrarray+0)->p1 = SS::ptfss; //(rc, "The quick Brown Fox Jumped ", "… over the lazy dog!", this);
+//    (ptrarray+1)->p1 = SS::ptfss; //(rc, "Every Good Boy … ", "Does Fine!", this);
+//    (ptrarray+2)->p1 = SS::ptfss; //(rc, "Hi diddle diddle the cat and the fiddle ", "… And the dish ran away with the spoon!", this);
     for (i = 0; i < maxIndex; i++) { //Beginning of the for loop #2
         result1.clear(); //Now clear the output result1 so we don't append onto the previous output.
         work.clear();
@@ -128,20 +134,21 @@ void SS::doFabricateSQLr2( char **theTokensReplacements, char *SQLt, char *cStri
         rpl.clear();
         cStringLength = (int)strlen(ptrPtrCopyOfReplacements[i]);
         rpl.assign(ptrPtrCopyOfReplacements[i], cStringLength);
-        if (debug ) cout << "3. The replacement for above token is: theTokensReplacements[i][1]: " << theTokensReplacements[i][1] << "\trpl: " << rpl << endl;
+        if (debug ) cout << "3. The replacement for above token is: theTokensReplacements[i][1]: "<< theTokensReplacements[i][1] \
+            << "\trpl: " << rpl << endl;
         // Now let regular expression do its thing.
         std::regex_replace (
-                            back_inserter(result1),  //Destination
-                            inputTemplate.begin(), inputTemplate.end(),      //Data range
-                            tokenAsRegularExpression,                     //Token
-                            rpl           //Replacement value
-                            );
+            back_inserter(result1),  //Destination
+            inputTemplate.begin(), inputTemplate.end(),      //Data range
+            tokenAsRegularExpression,                     //Token
+            rpl           //Replacement value
+        );
         if (debug) cout << "4. After regex_replace operation #" << i <<", result1 is " << result1.length() << \
             " bytes long and looks like:\n" << result1 << endl;
         if (debug) cout << "5. ===========================================================================================" << endl;
         inputTemplate.clear(); //Clear the inputTemplate so we don't append onto the back of the inputTemplate
         inputTemplate= result1; //Move regex_replace's output to the beginning of the just-cleared inputTemplate
-    }  //                                                                                                    End of the for loop #1
+    }  //End of for loop                                                                                      End of the for loop #1
     
     resultingStringLength = inputTemplate.length();
     resultingStringSize   = inputTemplate.size();
@@ -151,39 +158,39 @@ void SS::doFabricateSQLr2( char **theTokensReplacements, char *SQLt, char *cStri
     type c_string so C programs, which are oblivious to c++ type standard string and lack a c-string-terminating 0x'\0' character, \
     can use this data.
     kk = 0;
-    /*
-    while ( kk <=  resultingStringSize ) {
-        if ( cStringBuffer[kk] != ';') { //cStringBuffer is supplied by the caller. It is the caller's responsibility to make sure \
-            cStringBuffer is sufficiently sized to hole the resulting stirng found in
-            kk++;
-            continue;
-        } else {
-            cStringBuffer[kk+1] = '\0';
-            cStringBuffer[kk+2] = '\0';
-            cStringBuffer[kk+3] = '\0';
-            break;
-        }
-    }
-     */
+// Make sure there are no trailing characters
+    cStringBuffer[resultingStringSize+0]='\0';
     cStringBuffer[resultingStringSize+1]='\0';
     cStringBuffer[resultingStringSize+2]='\0';
-    cStringBuffer[resultingStringSize+3]='\0';
+    *outsize = (int )resultingStringSize;
 }  // End of doFabricateSQL
 
 SS::~SS() {
-    if (debugMode) p1(stringin1, stringin2, this);  //if in debug mode, call the function to which p1 points.
+    if (debugMode) {
+        auto position = index_ptf.find("PTF1");
+        if (position == index_ptf.end()) {
+            cerr << "Failed to find PTF1 in dictionary named index_ptf" << endl;
+        } else {
+            rc = (int)position->second.index;
+            cout <<  rc  << ". In class SS destructor, the Pointer to function (position->second.p1) is at location:\t"   << hex << fp << dec << endl;
+            cout <<  position->second.index  << ". In class SS destructor, the Pointer to function (position->second.p1) is at location:\t"   << hex << fp << dec << endl;
+            //       position->second.p1(1, &stringin1, &stringin2, this);
+        }
+        fp(rc, &stringin1, &stringin2, this);  //if in debug mode, call the function to which p1 points.
+    }
     delete[] ptrPtrCopyOfReplacementsAsString;
     delete[] ptrPtrCopyOfTokensAsString;
     delete[] ptrPtrCstring_WorkArray;
-    delete[] ptrPtrCopyOfTokens;        //Free dynamically acquired memory containing the replacements
-    delete[] ptrPtrCopyOfReplacements;  //Free dynamically acquired memory containing the replacements
+    delete[] ptrPtrCopyOfTokens;        //Free dynamically acquired memory containing the tokens.
+    delete[] ptrPtrCopyOfReplacements;  //Free dynamically acquired memory containing the replacements.
     
 } //End of destructor
 
 SS::SS(char *templatePointer, int bufsz, char **tokensReplacements, bool debug) {
     //Note: tokensReplacements is a 2-dimensional array where the first column, of each of many rows, contains the token and the \
     second column contains that token's replacement.
-    p1 = SS::ptfss; //p1 is a pointer to function
+    cout << "Just entered the constructor for class named SS" << endl;
+//    p1 = SS::ptfss; //p1 is a pointer to function
     
     i = j = kk = maxIndex = rc = rc1 = zero;
     caller_supplied_buffer_size = bufsz; //This is the size of the output buffer where we will construct the resulting c-string \
@@ -248,10 +255,6 @@ SS::SS(char *templatePointer, int bufsz, char **tokensReplacements, bool debug) 
                 ptrPtrCstrWorkR = &workCstring;
                 ptrPtrCopyOfReplacements[i] = *ptrPtrCstrWorkR;
                 if (debug) cout << "*ptrPtrCopyOfReplacements[" << i << "]" << " looks like: " << *ptrPtrCopyOfReplacements[i] << endl;
-                //                *(ptrPtrCstring_WorkArray + i) = workCstring;
-                //               *(ptrPtrCopyOfReplacements + i) = *(ptrPtrCstring_WorkArray + i)
-                //                std::strcpy(*(ptrPtrCstring_WorkArray + i), workCstring ); //ptrPtrCstring_WorkArray is not used as a source of data.
-                //                std::strcpy(*(ptrPtrCopyOfReplacements + i), *(ptrPtrCstring_WorkArray + i)); //ptrPtrCstring_WorkArray is not used as a source of data.
             } // end of error-check if/else
         } //               End of If/Else
     } //                   End of outer for loop.
@@ -284,7 +287,11 @@ SS::SS(char *templatePointer, int bufsz, char **tokensReplacements, bool debug) 
     
     
 } //End of SS constructor
-void SS::ptfss(const string instring1, const string instring2, SS *thisInstanceObject) { //When we enter this function there is \
-    no c++ `this` pointer so we don't know about the SS instance object
-    cout << "instring looks like: "  << instring1 << ", outstring, which we will return to the caller, looks like: " << instring2 << endl;
-}
+void SS::ptfss(int theindex, const string *instring1, const string *instring2, SS *thisInstanceObject)     { //When we enter this \
+    function there is no c++ `this` pointer so we don't know about the SS instance object. NB: static' can only be specified \
+    inside the class definition
+    char announce[10] = {'S', 'S', ':', ':', 'p', 't', 'f', 's', 's', '\0'};
+    char *ptrAnnounce = announce;
+    if (thisInstanceObject->debugMode) cout <<  ptrAnnounce << theindex << "\t" <<". instring looks like: "  << *instring1 \
+        << ", outstring, which we will return to the caller, looks like: " << *instring2 << endl;
+} //End of ptfss, "experimental", member function
